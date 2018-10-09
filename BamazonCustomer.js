@@ -3,7 +3,7 @@ var inquirer = require("inquirer");
 
 // Connecting to the database
 var connection = mysql.createConnection({
-    host: "127.0.0.1",
+    host: "localhost",
 
     // Your port; if not 3306
     port: 3306,
@@ -12,7 +12,7 @@ var connection = mysql.createConnection({
     user: "root",
 
     // Your password
-    password: "root",
+    password: "4fire123",
     database: "bamazon"
 });
 
@@ -32,7 +32,7 @@ function displayInventory() {
 
     
 
-    connection.query("SELECT item_id, product_name, price FROM products", function (err, res) {
+    connection.query("SELECT itemID, Productname, Price FROM Products", function (err, res) {
         if (err) throw err;
         // Looping over the results to print things neatly
 
@@ -41,9 +41,9 @@ function displayInventory() {
         var logVar = '';
         for (var i = 0; i < res.length; i++) {
             logVar = '';
-            logVar += 'Item ID: ' + res[i].item_id + '  || ';
-            logVar += 'Product Name: ' + res[i].product_name + '  || ';
-            logVar += 'Price: $' + res[i].price + '\n';
+            logVar += 'Item ID: ' + res[i].itemID + '  || ';
+            logVar += 'Product Name: ' + res[i].Productname + '  || ';
+            logVar += 'Price: $' + res[i].Price + '\n';
 
             console.log(logVar);
         }
@@ -93,7 +93,7 @@ function promptUser() {
         
 
         // Checking up if the id selected exists in the inventory
-        connection.query("SELECT * FROM products WHERE ?", { item_id: itemIdSelected }, function (err, data) {
+        connection.query("SELECT * FROM products WHERE ?", { itemID: itemIdSelected }, function (err, data) {
 
             if (err) throw err;
 
@@ -111,20 +111,20 @@ function promptUser() {
 
             
                 // compare it to the quantity available if it's lower or equal we do the updates
-                if (itemQuantityEntered <= productSelectedData.stock_quantity) {
+                if (itemQuantityEntered <= productSelectedData.StockQuantity) {
                     console.log('\nCongratulations, the product quantity you requested is in stock! Placing order.....');
                 //    Updating our bamazon database
                     connection.query("UPDATE products SET ? WHERE ?", [{
-                        stock_quantity: productSelectedData.stock_quantity - itemQuantityEntered
+                        StockQuantity: productSelectedData.StockQuantity - itemQuantityEntered
                     },
                     {
-                        item_id: itemIdSelected
+                        itemID: itemIdSelected
                     }], function (err, data) {
                         if (err) throw err;
 
                         // logging information for the user
-                        console.log('Your order has been placed! Your total is $' + (productSelectedData.price * itemQuantityEntered).toFixed(2));
-                        console.log( "Order Details: " + itemQuantityEntered + " " + productSelectedData.product_name);
+                        console.log('Your order has been placed! Your total is $' + (productSelectedData.Price * itemQuantityEntered).toFixed(2));
+                        console.log( "Order Details: " + itemQuantityEntered + " " + productSelectedData.ProductName);
                         console.log('Thank you for shopping with us!');
                         console.log("\n---------------------------------------------------------------------\n");
 
